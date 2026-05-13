@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: "/services", label: "Services" },
   { href: "/quiz", label: "Find Your Stylist" },
   { href: "/faq", label: "FAQ" },
+  { href: "/book", label: "Book Online" },
 ];
 
 const MENU_ID = "mobile-nav-menu";
