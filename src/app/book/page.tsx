@@ -60,7 +60,7 @@ function ServiceStep({
                         {svc.priceNote && (
                           <p className="text-xs text-[#8B7355] mt-0.5">{svc.priceNote}</p>
                         )}
-                        {categories.includes("extensions") && (
+                        {svc.requiresConsultation && (
                           <p className="text-xs text-[#D4846A] mt-1">
                             Consultation required — we&apos;ll confirm details after booking
                           </p>
