@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import type { Service, Stylist } from "@/types";
+import type { ServiceCategory } from "@/types";
+import { SERVICES, formatDuration } from "@/lib/services";
 
 type Step = 1 | 2 | 3 | 4;
 
@@ -11,6 +13,88 @@ const STEP_LABELS: Record<Step, string> = {
   3: "Date & Time",
   4: "Confirm",
 };
+
+const SERVICE_GROUPS: { label: string; categories: ServiceCategory[] }[] = [
+  { label: "Cuts & Styling", categories: ["cuts", "styling"] },
+  { label: "Color", categories: ["color"] },
+  { label: "Extensions", categories: ["extensions"] },
+  { label: "Treatments", categories: ["treatments"] },
+];
+
+function ServiceStep({
+  selected,
+  onSelect,
+  onContinue,
+}: {
+  selected: Service | null;
+  onSelect: (s: Service) => void;
+  onContinue: () => void;
+}) {
+  return (
+    <div>
+      <h2 className="font-serif text-xl font-bold text-[#1A1A2E] mb-6">
+        What service are you looking for?
+      </h2>
+      <div className="space-y-6">
+        {SERVICE_GROUPS.map(({ label, categories }) => {
+          const services = SERVICES.filter((s) => categories.includes(s.category));
+          return (
+            <div key={label}>
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-[#8B7355] mb-3">
+                {label}
+              </h3>
+              <div className="space-y-2">
+                {services.map((svc) => (
+                  <button
+                    key={svc.id}
+                    onClick={() => onSelect(svc)}
+                    className={`w-full text-left p-4 rounded-2xl border transition-all focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2 ${
+                      selected?.id === svc.id
+                        ? "border-[#C9A96E] bg-[#C9A96E]/10 shadow-sm"
+                        : "border-[#C9A96E]/20 bg-[#F0EBE3] hover:border-[#C9A96E]/60 hover:shadow-sm"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="font-medium text-[#1A1A2E] text-sm">{svc.name}</p>
+                        {svc.priceNote && (
+                          <p className="text-xs text-[#8B7355] mt-0.5">{svc.priceNote}</p>
+                        )}
+                        {categories.includes("extensions") && (
+                          <p className="text-xs text-[#D4846A] mt-1">
+                            Consultation required — we&apos;ll confirm details after booking
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-sm font-semibold text-[#1A1A2E]">
+                          {svc.startingPrice === 0 ? "Free" : `from $${svc.startingPrice}`}
+                        </p>
+                        <p className="text-xs text-[#8B7355] mt-0.5">
+                          {formatDuration(svc.durationMin, svc.durationMax)}
+                        </p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-8 flex justify-end">
+        <button
+          disabled={!selected}
+          onClick={onContinue}
+          className="bg-[#C9A96E] text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-[#8B7355] transition-colors disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2"
+        >
+          Continue
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function ProgressBar({ currentStep }: { currentStep: Step }) {
   const steps = [1, 2, 3, 4] as Step[];
@@ -56,7 +140,6 @@ export default function BookPage() {
   const [date, setDate] = useState<string | null>(null);
   const [slotIndex, setSlotIndex] = useState<number | null>(null);
 
-  void service;
   void stylist;
   void date;
   void slotIndex;
@@ -87,15 +170,16 @@ export default function BookPage() {
 
         <div className="mt-10">
           {step === 1 && (
-            <div>
-              <p className="text-center text-[#8B7355]">Step 1 — Service</p>
-              <button
-                className="mt-4 mx-auto block bg-[#C9A96E] text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-[#8B7355] transition-colors"
-                onClick={() => setStep(2)}
-              >
-                Continue
-              </button>
-            </div>
+            <ServiceStep
+              selected={service}
+              onSelect={setService}
+              onContinue={() => {
+                setStep(2);
+                setStylist(null);
+                setDate(null);
+                setSlotIndex(null);
+              }}
+            />
           )}
           {step === 2 && (
             <div>
