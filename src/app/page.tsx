@@ -13,6 +13,7 @@ import {
 } from "@/lib/business";
 import { InstagramFeed } from "@/components/InstagramFeed";
 import { Testimonials } from "@/components/Testimonials";
+import { BOOK_SMS_GENERAL } from "@/lib/booking";
 
 const TRUST_BADGES = [
   { icon: Star, title: "4.5★ Rated", desc: "366+ reviews from clients who drive hours to see us" },
@@ -54,7 +55,7 @@ export default function HomePage() {
               Find My Stylist ✨
             </Link>
             <a
-              href={`sms:${SALON_PHONE}`}
+              href={BOOK_SMS_GENERAL}
               className="border-2 border-[#FAF7F2]/30 text-[#FAF7F2] font-semibold px-8 py-4 rounded-full hover:border-[#C9A96E] hover:text-[#C9A96E] transition-colors text-base focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2 focus:ring-offset-[#1A1A2E]"
             >
               Book Now
@@ -200,7 +201,7 @@ export default function HomePage() {
             </ul>
             <div className="mt-8 flex gap-4">
               <a
-                href={`sms:${SALON_PHONE}`}
+                href={BOOK_SMS_GENERAL}
                 className="bg-[#C9A96E] text-white font-semibold px-6 py-3 rounded-full hover:bg-[#8B7355] transition-colors text-sm"
               >
                 Text to Book

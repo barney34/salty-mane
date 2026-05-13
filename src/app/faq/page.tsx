@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { FAQ_ITEMS } from "@/lib/faq";
 import { FaqAccordion } from "@/components/FaqAccordion";
-import { BOOK_SMS } from "@/lib/booking";
+import { BOOK_SMS_GENERAL } from "@/lib/booking";
 
 export const metadata: Metadata = {
   title: "FAQ | The Salty Mane Hair Co.",
@@ -36,7 +36,7 @@ export default function FaqPage() {
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
-            href={BOOK_SMS}
+            href={BOOK_SMS_GENERAL}
             className="bg-[#C9A96E] text-white font-semibold px-8 py-3 rounded-full hover:bg-[#8B7355] transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2 focus:ring-offset-[#1A1A2E]"
           >
             Text Us

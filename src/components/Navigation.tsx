@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { SALON_PHONE, SALON_PHONE_DISPLAY } from "@/lib/business";
+import { BOOK_SMS_GENERAL } from "@/lib/booking";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -61,7 +62,7 @@ export function Navigation() {
             {SALON_PHONE_DISPLAY}
           </a>
           <a
-            href={`sms:${SALON_PHONE}`}
+            href={BOOK_SMS_GENERAL}
             className="bg-[#C9A96E] text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-[#8B7355] transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2"
           >
             Book Now
@@ -96,7 +97,7 @@ export function Navigation() {
             </Link>
           ))}
           <a
-            href={`sms:${SALON_PHONE}`}
+            href={BOOK_SMS_GENERAL}
             className="block text-center bg-[#C9A96E] text-white font-medium py-3 rounded-full hover:bg-[#8B7355] transition-colors mt-3"
             onClick={closeMenu}
           >

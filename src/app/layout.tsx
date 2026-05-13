@@ -11,6 +11,7 @@ import {
   SALON_INSTAGRAM_ALT,
   SALON_FACEBOOK,
 } from "@/lib/business";
+import { BOOK_SMS_GENERAL } from "@/lib/booking";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -166,7 +167,7 @@ export default function RootLayout({
               <div className="mt-4">
                 <p className="text-xs text-[#FAF7F2]/40 mb-1">Book via text:</p>
                 <a
-                  href={`sms:${SALON_PHONE}`}
+                  href={BOOK_SMS_GENERAL}
                   className="inline-block bg-[#C9A96E] text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-[#8B7355] transition-colors"
                 >
                   Text to Book

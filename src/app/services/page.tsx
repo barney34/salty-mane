@@ -3,6 +3,7 @@ import type { Service } from "@/types";
 import { Clock, DollarSign, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { BOOK_SMS_GENERAL } from "@/lib/booking";
 
 export const metadata: Metadata = {
   title: "Services & Pricing | The Salty Mane Hair Co.",
@@ -124,7 +125,7 @@ export default function ServicesPage() {
             Take the Quiz
           </Link>
           <a
-            href="sms:6786486010"
+            href={BOOK_SMS_GENERAL}
             className="border-2 border-[#FAF7F2]/30 text-[#FAF7F2] font-semibold px-8 py-3 rounded-full hover:border-[#C9A96E] hover:text-[#C9A96E] transition-colors text-sm"
           >
             Text to Book
