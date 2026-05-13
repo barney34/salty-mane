@@ -8,14 +8,28 @@ interface StylistCardProps {
   loadScore?: number;
 }
 
+// Gradient backgrounds for the initials avatar — cycles by stylist index
+const AVATAR_GRADIENTS = [
+  "from-[#C9A96E] to-[#8B7355]",
+  "from-[#4A7FA5] to-[#1A1A2E]",
+  "from-[#D4846A] to-[#C9A96E]",
+  "from-[#7A9E87] to-[#4A7FA5]",
+  "from-[#8B7355] to-[#1A1A2E]",
+  "from-[#C9A96E] to-[#D4846A]",
+  "from-[#1A1A2E] to-[#4A7FA5]",
+  "from-[#7A9E87] to-[#8B7355]",
+];
+
 export function StylistCard({ stylist, loadScore = 0 }: StylistCardProps) {
   const inHighDemand = loadScore > 0.75;
   const fullyBooked = loadScore >= 1.0;
+  const gradientIdx = stylist.name.charCodeAt(0) % AVATAR_GRADIENTS.length;
+  const gradient = AVATAR_GRADIENTS[gradientIdx] ?? AVATAR_GRADIENTS[0];
 
   return (
     <article className="bg-[#F0EBE3] rounded-2xl border border-[#C9A96E]/20 hover:shadow-md transition-shadow flex flex-col overflow-hidden">
-      {/* Headshot */}
-      <div className="relative h-56 w-full bg-[#C9A96E]/10">
+      {/* Headshot or styled initials avatar */}
+      <div className="relative h-56 w-full">
         {stylist.headshot ? (
           <Image
             src={stylist.headshot}
@@ -25,13 +39,25 @@ export function StylistCard({ stylist, loadScore = 0 }: StylistCardProps) {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <span className="font-serif text-5xl font-bold text-[#C9A96E]/40">
+          <div className={`w-full h-full bg-gradient-to-br ${gradient} flex flex-col items-center justify-center gap-2`}>
+            <span className="text-6xl font-serif font-bold text-white/90 select-none">
               {stylist.name[0]}
             </span>
+            {stylist.instagram && (
+              <a
+                href={`https://instagram.com/${stylist.instagram.replace("@", "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-white/70 hover:text-white text-xs transition-colors"
+                aria-label={`${stylist.name} on Instagram`}
+              >
+                <IgIcon className="w-3.5 h-3.5" />
+                {stylist.instagram}
+              </a>
+            )}
           </div>
         )}
-        {/* Demand badge overlaid on photo */}
+
         {(fullyBooked || inHighDemand) && (
           <div className="absolute top-3 right-3">
             {fullyBooked ? (
@@ -89,5 +115,17 @@ export function StylistCard({ stylist, loadScore = 0 }: StylistCardProps) {
         )}
       </div>
     </article>
+  );
+}
+
+function IgIcon({ className }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"
+      className={className} aria-hidden="true">
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
   );
 }

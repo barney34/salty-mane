@@ -126,7 +126,7 @@ export default function HomePage() {
       </section>
 
       {/* Instagram feed */}
-      <InstagramFeed handle={SALON_INSTAGRAM_MAIN} />
+      <InstagramFeed primaryHandle={SALON_INSTAGRAM_MAIN} />
 
       {/* Services teaser */}
       <section className="py-20 px-6 bg-[#1A1A2E] text-[#FAF7F2]">
