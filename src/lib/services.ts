@@ -3,7 +3,6 @@ import type { Service } from "@/types";
 export const SERVICES: Service[] = [
   // Cuts & Styling
   { id: "womens-cut", name: "Women's Haircut", category: "cuts", startingPrice: 75, priceNote: "includes shampoo & blowdry", durationMin: 45, durationMax: 60 },
-  { id: "mens-cut", name: "Men's Haircut", category: "cuts", startingPrice: 55, durationMin: 30, durationMax: 45 },
   { id: "bang-trim", name: "Bang Trim", category: "cuts", startingPrice: 20, priceNote: "existing clients only", durationMin: 15, durationMax: 15 },
   { id: "blowout", name: "Shampoo & Blowout", category: "styling", startingPrice: 60, durationMin: 45, durationMax: 60 },
   { id: "event-styling", name: "Event / Occasion Styling", category: "styling", startingPrice: 85, priceNote: "updo, waves, etc.", durationMin: 60, durationMax: 90 },
