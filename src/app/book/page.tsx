@@ -4,6 +4,8 @@ import { useState } from "react";
 import type { Service, Stylist } from "@/types";
 import type { ServiceCategory } from "@/types";
 import { SERVICES, formatDuration } from "@/lib/services";
+import { STYLISTS } from "@/lib/stylists";
+import { getLoadScore } from "@/lib/scheduling";
 
 type Step = 1 | 2 | 3 | 4;
 
@@ -20,6 +22,23 @@ const SERVICE_GROUPS: { label: string; categories: ServiceCategory[] }[] = [
   { label: "Extensions", categories: ["extensions"] },
   { label: "Treatments", categories: ["treatments"] },
 ];
+
+function getEligibleStylists(svc: Service): Stylist[] {
+  let eligible = STYLISTS;
+  if (svc.requiresExtensionCert) {
+    eligible = eligible.filter((s) => s.extensionCertified);
+  } else if (svc.id === "color-correction") {
+    eligible = eligible.filter((s) => s.colorCorrectionEligible);
+  }
+  return [...eligible].sort((a, b) => getLoadScore(a.id) - getLoadScore(b.id));
+}
+
+function getAvailabilityBadge(stylistId: string): { label: string; color: string } {
+  const score = getLoadScore(stylistId);
+  if (score >= 1.0) return { label: "Fully Booked", color: "text-[#C0392B]" };
+  if (score >= 0.5) return { label: "Limited", color: "text-[#D4846A]" };
+  return { label: "Available", color: "text-[#7A9E87]" };
+}
 
 function ServiceStep({
   selected,
@@ -96,6 +115,91 @@ function ServiceStep({
   );
 }
 
+function StylistStep({
+  service,
+  selected,
+  onSelect,
+  onContinue,
+  onBack,
+}: {
+  service: Service;
+  selected: Stylist | null;
+  onSelect: (s: Stylist) => void;
+  onContinue: () => void;
+  onBack: () => void;
+}) {
+  const stylists = getEligibleStylists(service);
+
+  return (
+    <div>
+      <h2 className="font-serif text-xl font-bold text-[#1A1A2E] mb-1">
+        Choose your stylist
+      </h2>
+      <p className="text-sm text-[#8B7355] mb-6">
+        Showing stylists available for{" "}
+        <span className="font-medium text-[#1A1A2E]">{service.name}</span>
+      </p>
+
+      <div className="space-y-3">
+        {stylists.map((st) => {
+          const badge = getAvailabilityBadge(st.id);
+          const fullyBooked = getLoadScore(st.id) >= 1.0;
+          return (
+            <button
+              key={st.id}
+              disabled={fullyBooked}
+              onClick={() => onSelect(st)}
+              className={`w-full text-left p-4 rounded-2xl border transition-all focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2 ${
+                fullyBooked
+                  ? "border-[#C9A96E]/10 bg-[#F0EBE3]/50 opacity-50 cursor-not-allowed"
+                  : selected?.id === st.id
+                  ? "border-[#C9A96E] bg-[#C9A96E]/10 shadow-sm"
+                  : "border-[#C9A96E]/20 bg-[#F0EBE3] hover:border-[#C9A96E]/60 hover:shadow-sm"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-semibold text-[#1A1A2E]">{st.name}</p>
+                  <p className="text-xs text-[#8B7355] mt-0.5">{st.title}</p>
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {st.specialties.slice(0, 3).map((sp) => (
+                      <span
+                        key={sp}
+                        className="text-xs bg-[#FAF7F2] border border-[#C9A96E]/30 text-[#8B7355] px-2 py-0.5 rounded-full"
+                      >
+                        {sp}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <span className={`text-xs font-medium shrink-0 mt-1 ${badge.color}`}>
+                  {badge.label}
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-8 flex justify-between">
+        <button
+          onClick={onBack}
+          className="border-2 border-[#1A1A2E] text-[#1A1A2E] px-6 py-2.5 rounded-full text-sm font-medium hover:bg-[#1A1A2E] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#1A1A2E] focus:ring-offset-2"
+        >
+          Back
+        </button>
+        <button
+          disabled={!selected}
+          onClick={onContinue}
+          className="bg-[#C9A96E] text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-[#8B7355] transition-colors disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2"
+        >
+          Continue
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ProgressBar({ currentStep }: { currentStep: Step }) {
   const steps = [1, 2, 3, 4] as Step[];
   return (
@@ -140,7 +244,6 @@ export default function BookPage() {
   const [date, setDate] = useState<string | null>(null);
   const [slotIndex, setSlotIndex] = useState<number | null>(null);
 
-  void stylist;
   void date;
   void slotIndex;
   void confirmed;
@@ -182,23 +285,17 @@ export default function BookPage() {
             />
           )}
           {step === 2 && (
-            <div>
-              <p className="text-center text-[#8B7355]">Step 2 — Stylist</p>
-              <div className="flex gap-3 mt-4 justify-center">
-                <button
-                  className="border border-[#1A1A2E] text-[#1A1A2E] px-6 py-2.5 rounded-full text-sm font-medium hover:bg-[#1A1A2E] hover:text-white transition-colors"
-                  onClick={() => setStep(1)}
-                >
-                  Back
-                </button>
-                <button
-                  className="bg-[#C9A96E] text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-[#8B7355] transition-colors"
-                  onClick={() => setStep(3)}
-                >
-                  Continue
-                </button>
-              </div>
-            </div>
+            <StylistStep
+              service={service!}
+              selected={stylist}
+              onSelect={setStylist}
+              onContinue={() => {
+                setStep(3);
+                setDate(null);
+                setSlotIndex(null);
+              }}
+              onBack={() => setStep(1)}
+            />
           )}
           {step === 3 && (
             <div>
