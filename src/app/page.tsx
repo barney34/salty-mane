@@ -239,27 +239,23 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Map embed — OpenStreetMap (free, no API key, works on all hosts) */}
-        <div className="mt-8 rounded-2xl overflow-hidden border border-[#C9A96E]/20">
-          <iframe
-            src="https://www.openstreetmap.org/export/embed.html?bbox=-84.2961%2C34.0734%2C-84.2921%2C34.0774&layer=mapnik&marker=34.0754%2C-84.2941"
-            width="100%"
-            height="300"
-            style={{ border: 0 }}
-            loading="lazy"
-            title="The Salty Mane location map"
-          />
-        </div>
-        <div className="mt-3 text-right">
-          <a
-            href="https://www.google.com/maps/dir/?api=1&destination=5530+Windward+Pkwy+STE+1260+Alpharetta+GA+30004"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-[#8B7355] hover:text-[#C9A96E] transition-colors underline underline-offset-2"
-          >
-            Get directions in Google Maps →
-          </a>
-        </div>
+        {/* Map CTA */}
+        <a
+          href="https://www.google.com/maps/dir/?api=1&destination=5530+Windward+Pkwy+STE+1260+Alpharetta+GA+30004"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-8 flex items-center justify-between gap-6 bg-[#1A1A2E] text-[#FAF7F2] rounded-2xl px-8 py-6 hover:bg-[#C9A96E] transition-colors group focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2"
+        >
+          <div>
+            <p className="font-semibold text-base">Get Directions</p>
+            <p className="text-sm text-[#FAF7F2]/60 group-hover:text-white/70 mt-0.5">
+              5530 Windward Pkwy STE #1260 · Alpharetta, GA
+            </p>
+          </div>
+          <svg className="w-6 h-6 shrink-0 text-[#C9A96E] group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
       </section>
     </>
   );
