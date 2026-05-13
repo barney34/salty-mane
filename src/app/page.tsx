@@ -239,18 +239,26 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Google Maps embed */}
+        {/* Map embed — OpenStreetMap (free, no API key, works on all hosts) */}
         <div className="mt-8 rounded-2xl overflow-hidden border border-[#C9A96E]/20">
           <iframe
-            src="https://maps.google.com/maps?q=5530+Windward+Pkwy+STE+1260+Alpharetta+GA+30004&output=embed&z=15"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=-84.2961%2C34.0734%2C-84.2921%2C34.0774&layer=mapnik&marker=34.0754%2C-84.2941"
             width="100%"
             height="300"
             style={{ border: 0 }}
-            allowFullScreen
             loading="lazy"
             title="The Salty Mane location map"
-            referrerPolicy="no-referrer-when-downgrade"
           />
+        </div>
+        <div className="mt-3 text-right">
+          <a
+            href="https://www.google.com/maps/dir/?api=1&destination=5530+Windward+Pkwy+STE+1260+Alpharetta+GA+30004"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-[#8B7355] hover:text-[#C9A96E] transition-colors underline underline-offset-2"
+          >
+            Get directions in Google Maps →
+          </a>
         </div>
       </section>
     </>
