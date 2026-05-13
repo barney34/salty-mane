@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronLeft } from "lucide-react";
 import { QUIZ_QUESTIONS, matchStylist } from "@/lib/quiz";
 import type { QuizAnswers, QuizAnswerValue, QuizResult } from "@/types";
@@ -10,34 +10,31 @@ export function StylistQuiz() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswers>({});
   const [result, setResult] = useState<QuizResult | null>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
   const question = QUIZ_QUESTIONS[step];
   const total = QUIZ_QUESTIONS.length;
-  const progress = ((step) / total) * 100;
+  const progressPct = Math.round(((step + 1) / total) * 100);
 
-  const keyMap: (keyof QuizAnswers)[] = [
-    "goal",
-    "hairType",
-    "colorHistory",
-    "extensions",
-    "budget",
-    "time",
-  ];
+  // Move focus to question heading on step change so keyboard/SR users know content changed
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, [step]);
 
   function handleAnswer(value: QuizAnswerValue) {
-    const key = keyMap[step];
-    const updated = { ...answers, [key]: value };
+    if (!question) return;
+    const updated = { ...answers, [question.id]: value };
     setAnswers(updated);
 
     if (step < total - 1) {
-      setStep(step + 1);
+      setStep((s) => s + 1);
     } else {
       setResult(matchStylist(updated));
     }
   }
 
   function handleBack() {
-    if (step > 0) setStep(step - 1);
+    if (step > 0) setStep((s) => s - 1);
   }
 
   function handleRetake() {
@@ -50,6 +47,8 @@ export function StylistQuiz() {
     return <QuizResultView result={result} onRetake={handleRetake} />;
   }
 
+  if (!question) return null;
+
   return (
     <div className="max-w-2xl mx-auto">
       {/* Progress bar */}
@@ -58,27 +57,30 @@ export function StylistQuiz() {
           <span className="text-xs text-[#8B7355] font-medium uppercase tracking-widest">
             Question {step + 1} of {total}
           </span>
-          <span className="text-xs text-[#8B7355]">
-            {Math.round(((step + 1) / total) * 100)}% complete
-          </span>
+          <span className="text-xs text-[#8B7355]">{progressPct}% complete</span>
         </div>
         <div
           className="h-1 bg-[#C9A96E]/20 rounded-full overflow-hidden"
           role="progressbar"
-          aria-valuenow={Math.round(progress)}
+          aria-label="Quiz progress"
+          aria-valuenow={progressPct}
           aria-valuemin={0}
           aria-valuemax={100}
         >
           <div
             className="h-full bg-[#C9A96E] rounded-full transition-all duration-500 ease-out"
-            style={{ width: `${((step + 1) / total) * 100}%` }}
+            style={{ width: `${progressPct}%` }}
           />
         </div>
       </div>
 
-      {/* Question */}
+      {/* Question — tabIndex={-1} allows programmatic focus without tab stop */}
       <div className="mb-8">
-        <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A2E] mb-2">
+        <h2
+          ref={headingRef}
+          tabIndex={-1}
+          className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1A2E] mb-2 focus:outline-none"
+        >
           {question.question}
         </h2>
         {question.subtitle && (
@@ -86,11 +88,11 @@ export function StylistQuiz() {
         )}
       </div>
 
-      {/* Answers */}
+      {/* Answers — role="group" with heading provides context; buttons don't use aria-pressed
+          since selection advances immediately (no persistent toggle state) */}
       <ul className="space-y-3" role="list">
         {question.answers.map((answer) => {
-          const currentKey = keyMap[step];
-          const isSelected = answers[currentKey] === answer.value;
+          const isSelected = answers[question.id] === answer.value;
           return (
             <li key={answer.value}>
               <button
@@ -100,7 +102,6 @@ export function StylistQuiz() {
                     ? "border-[#C9A96E] bg-[#C9A96E] text-white"
                     : "border-[#C9A96E]/25 bg-[#F0EBE3] text-[#1A1A2E] hover:border-[#C9A96E] hover:bg-[#C9A96E]/10"
                 }`}
-                aria-pressed={isSelected}
               >
                 <div className="flex items-center gap-3">
                   {answer.icon && (
@@ -111,11 +112,7 @@ export function StylistQuiz() {
                   <div>
                     <p className="font-semibold text-sm">{answer.label}</p>
                     {answer.description && (
-                      <p
-                        className={`text-xs mt-0.5 ${
-                          isSelected ? "text-white/75" : "text-[#8B7355]"
-                        }`}
-                      >
+                      <p className={`text-xs mt-0.5 ${isSelected ? "text-white/75" : "text-[#8B7355]"}`}>
                         {answer.description}
                       </p>
                     )}
@@ -127,7 +124,6 @@ export function StylistQuiz() {
         })}
       </ul>
 
-      {/* Back button */}
       {step > 0 && (
         <button
           onClick={handleBack}

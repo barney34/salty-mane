@@ -1,6 +1,11 @@
 import type { StylistLoad } from "@/types";
 import { STYLISTS } from "./stylists";
 
+// Eastern time date string — rolls over at midnight ET, not UTC midnight
+function getTodayStr(): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date());
+}
+
 // Seeded mock load for MVP — Phase 2 replaces with live booking API
 const MOCK_LOADS: StylistLoad[] = [
   { stylistId: "laci", date: getTodayStr(), bookedComplex: 2, bookedTotal: 3 },
@@ -9,10 +14,6 @@ const MOCK_LOADS: StylistLoad[] = [
   { stylistId: "anna", date: getTodayStr(), bookedComplex: 1, bookedTotal: 2 },
   { stylistId: "sara", date: getTodayStr(), bookedComplex: 0, bookedTotal: 1 },
 ];
-
-function getTodayStr(): string {
-  return new Date().toISOString().split("T")[0];
-}
 
 function getLoad(stylistId: string): StylistLoad {
   const today = getTodayStr();
@@ -31,27 +32,18 @@ export function getLoadScore(stylistId: string): number {
   if (!stylist) return 1.0;
 
   const load = getLoad(stylistId);
-  const complexRatio = load.bookedComplex / stylist.maxComplexPerDay;
-  const totalRatio = load.bookedTotal / stylist.maxTotalSlotsPerDay;
+  const complexRatio =
+    stylist.maxComplexPerDay > 0 ? load.bookedComplex / stylist.maxComplexPerDay : 0;
+  const totalRatio =
+    stylist.maxTotalSlotsPerDay > 0 ? load.bookedTotal / stylist.maxTotalSlotsPerDay : 0;
 
   return complexRatio * 0.6 + totalRatio * 0.4;
 }
 
 export function getAllLoadScores(): Record<string, number> {
-  return Object.fromEntries(
-    STYLISTS.map((s) => [s.id, getLoadScore(s.id)])
-  );
+  return Object.fromEntries(STYLISTS.map((s) => [s.id, getLoadScore(s.id)]));
 }
 
 export function isFullyBooked(stylistId: string): boolean {
   return getLoadScore(stylistId) >= 1.0;
-}
-
-export function getLeastLoadedEligible(eligibleIds: string[]): string | null {
-  const scored = eligibleIds
-    .map((id) => ({ id, score: getLoadScore(id) }))
-    .filter((s) => s.score < 1.0)
-    .sort((a, b) => a.score - b.score);
-
-  return scored[0]?.id ?? null;
 }

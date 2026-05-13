@@ -1,26 +1,14 @@
 import type { QuizResult, StylistMatch } from "@/types";
 import { Clock, DollarSign, AlertTriangle, Star } from "lucide-react";
+import { formatDuration } from "@/lib/services";
+import { SALON_PHONE, SALON_PHONE_DISPLAY } from "@/lib/business";
 
 interface QuizResultProps {
   result: QuizResult;
   onRetake: () => void;
 }
 
-function formatDuration(min: number, max: number): string {
-  const fmt = (m: number) =>
-    m >= 60
-      ? `${Math.floor(m / 60)}hr${m % 60 > 0 ? ` ${m % 60}min` : ""}`
-      : `${m}min`;
-  return min === max ? fmt(min) : `${fmt(min)} – ${fmt(max)}`;
-}
-
-function MatchCard({
-  match,
-  isPrimary,
-}: {
-  match: StylistMatch;
-  isPrimary: boolean;
-}) {
+function MatchCard({ match, isPrimary }: { match: StylistMatch; isPrimary: boolean }) {
   return (
     <div
       className={`rounded-2xl p-6 border ${
@@ -39,9 +27,9 @@ function MatchCard({
       )}
 
       <div className="mb-4">
-        <h2 className={`font-serif text-2xl font-bold ${isPrimary ? "text-[#FAF7F2]" : "text-[#1A1A2E]"}`}>
+        <h3 className={`font-serif text-2xl font-bold ${isPrimary ? "text-[#FAF7F2]" : "text-[#1A1A2E]"}`}>
           {match.stylist.name}
-        </h2>
+        </h3>
         <p className={`text-sm mt-1 ${isPrimary ? "text-[#C9A96E]" : "text-[#8B7355]"}`}>
           {match.stylist.title}
         </p>
@@ -92,7 +80,7 @@ function MatchCard({
       )}
 
       <a
-        href="sms:6786486010"
+        href={`sms:${SALON_PHONE}`}
         className={`block text-center text-sm font-medium py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2 ${
           isPrimary
             ? "bg-[#C9A96E] text-white hover:bg-[#8B7355]"
@@ -112,12 +100,11 @@ export function QuizResultView({ result, onRetake }: QuizResultProps) {
         <p className="text-sm text-[#8B7355] uppercase tracking-widest font-semibold mb-2">
           Your Match
         </p>
-        <h1 className="font-serif text-3xl font-bold text-[#1A1A2E]">
+        <h2 className="font-serif text-3xl font-bold text-[#1A1A2E]">
           We found your perfect stylist
-        </h1>
+        </h2>
         <p className="text-[#8B7355] mt-3">
-          Based on your hair goals, here&apos;s who we recommend — and a great
-          backup option.
+          Based on your hair goals, here&apos;s who we recommend — and a great backup option.
         </p>
       </div>
 
@@ -136,8 +123,8 @@ export function QuizResultView({ result, onRetake }: QuizResultProps) {
       <div className="mt-8 text-center space-y-4">
         <p className="text-sm text-[#8B7355]">
           Questions? Call or text us at{" "}
-          <a href="tel:6786486010" className="text-[#C9A96E] font-medium underline underline-offset-2">
-            678-648-6010
+          <a href={`tel:${SALON_PHONE}`} className="text-[#C9A96E] font-medium underline underline-offset-2">
+            {SALON_PHONE_DISPLAY}
           </a>
         </p>
         <button

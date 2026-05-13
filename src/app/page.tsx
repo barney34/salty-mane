@@ -3,23 +3,18 @@ import { Scissors, Star, Shield, MapPin, Phone, Clock } from "lucide-react";
 import { STYLISTS } from "@/lib/stylists";
 import { getAllLoadScores } from "@/lib/scheduling";
 import { StylistCard } from "@/components/StylistCard";
+import {
+  SALON_PHONE,
+  SALON_PHONE_DISPLAY,
+  SALON_EMAIL,
+  SALON_ADDRESS,
+  SALON_HOURS,
+} from "@/lib/business";
 
 const TRUST_BADGES = [
-  {
-    icon: Star,
-    title: "4.5★ Rated",
-    desc: "366+ reviews from clients who drive hours to see us",
-  },
-  {
-    icon: Scissors,
-    title: "Color & Extension Specialists",
-    desc: "Blonde transformations, balayage, hand-tied extensions",
-  },
-  {
-    icon: Shield,
-    title: "Hair-Health First",
-    desc: "We only do what's right for your hair — no shortcuts",
-  },
+  { icon: Star, title: "4.5★ Rated", desc: "366+ reviews from clients who drive hours to see us" },
+  { icon: Scissors, title: "Color & Extension Specialists", desc: "Blonde transformations, balayage, hand-tied extensions" },
+  { icon: Shield, title: "Hair-Health First", desc: "We only do what's right for your hair — no shortcuts" },
 ];
 
 export default function HomePage() {
@@ -31,10 +26,7 @@ export default function HomePage() {
       <section className="relative bg-[#1A1A2E] text-[#FAF7F2] py-28 px-6 overflow-hidden">
         <div
           className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage:
-              "radial-gradient(ellipse at 70% 50%, #C9A96E 0%, transparent 60%)",
-          }}
+          style={{ backgroundImage: "radial-gradient(ellipse at 70% 50%, #C9A96E 0%, transparent 60%)" }}
           aria-hidden="true"
         />
         <div className="relative max-w-3xl mx-auto text-center">
@@ -44,7 +36,7 @@ export default function HomePage() {
           <h1 className="font-serif text-5xl sm:text-6xl font-bold leading-tight mb-6">
             Hair that moves
             <br />
-            <em className="text-[#C9A96E] not-italic">with your life.</em>
+            <span className="text-[#C9A96E]">with your life.</span>
           </h1>
           <p className="text-[#FAF7F2]/70 text-lg max-w-xl mx-auto mb-10 leading-relaxed">
             Salty Mane is Alpharetta&apos;s destination for expert color, precision
@@ -59,7 +51,7 @@ export default function HomePage() {
               Find My Stylist ✨
             </Link>
             <a
-              href="sms:6786486010"
+              href={`sms:${SALON_PHONE}`}
               className="border-2 border-[#FAF7F2]/30 text-[#FAF7F2] font-semibold px-8 py-4 rounded-full hover:border-[#C9A96E] hover:text-[#C9A96E] transition-colors text-base focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2 focus:ring-offset-[#1A1A2E]"
             >
               Book Now
@@ -179,27 +171,27 @@ export default function HomePage() {
               <li className="flex items-start gap-3">
                 <MapPin size={18} className="text-[#C9A96E] mt-0.5 shrink-0" aria-hidden="true" />
                 <span>
-                  5530 Windward Parkway STE #1260<br />
-                  Alpharetta, GA 30004<br />
-                  <span className="text-sm text-[#8B7355]/70">Left of LA Fitness, behind Walgreens, facing Deerfield Pkwy</span>
+                  {SALON_ADDRESS.street}<br />
+                  {SALON_ADDRESS.city}, {SALON_ADDRESS.state} {SALON_ADDRESS.zip}<br />
+                  <span className="text-sm text-[#8B7355]/70">{SALON_ADDRESS.directions}</span>
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={18} className="text-[#C9A96E] shrink-0" aria-hidden="true" />
-                <a href="tel:6786486010" className="hover:text-[#C9A96E] transition-colors">
-                  678-648-6010 (call or text)
+                <a href={`tel:${SALON_PHONE}`} className="hover:text-[#C9A96E] transition-colors">
+                  {SALON_PHONE_DISPLAY} (call or text)
                 </a>
               </li>
             </ul>
             <div className="mt-8 flex gap-4">
               <a
-                href="sms:6786486010"
+                href={`sms:${SALON_PHONE}`}
                 className="bg-[#C9A96E] text-white font-semibold px-6 py-3 rounded-full hover:bg-[#8B7355] transition-colors text-sm"
               >
                 Text to Book
               </a>
               <a
-                href="mailto:bookings@thesaltymane.com"
+                href={`mailto:${SALON_EMAIL}`}
                 className="border-2 border-[#1A1A2E] text-[#1A1A2E] font-semibold px-6 py-3 rounded-full hover:bg-[#1A1A2E] hover:text-[#FAF7F2] transition-colors text-sm"
               >
                 Email Us
@@ -215,15 +207,7 @@ export default function HomePage() {
               </h3>
             </div>
             <ul className="space-y-2 text-sm">
-              {[
-                { day: "Monday", hours: "9:00am – 3:00pm" },
-                { day: "Tuesday", hours: "9:00am – 7:00pm" },
-                { day: "Wednesday", hours: "9:00am – 7:00pm" },
-                { day: "Thursday", hours: "9:00am – 7:00pm" },
-                { day: "Friday", hours: "9:00am – 6:00pm" },
-                { day: "Saturday", hours: "9:00am – 4:00pm" },
-                { day: "Sunday", hours: "Closed" },
-              ].map(({ day, hours }) => (
+              {SALON_HOURS.map(({ day, hours }) => (
                 <li key={day} className="flex justify-between">
                   <span className="text-[#8B7355] font-medium">{day}</span>
                   <span className={hours === "Closed" ? "text-[#8B7355]/50" : "text-[#1A1A2E]"}>

@@ -84,7 +84,7 @@ export type QuizAnswerValue =
   | "time_flex";
 
 export interface QuizQuestion {
-  id: string;
+  id: keyof QuizAnswers;
   question: string;
   subtitle?: string;
   answers: QuizAnswer[];

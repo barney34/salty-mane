@@ -2,6 +2,15 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { Navigation } from "@/components/Navigation";
+import {
+  SALON_PHONE,
+  SALON_PHONE_DISPLAY,
+  SALON_ADDRESS,
+  SALON_HOURS,
+  SALON_INSTAGRAM_MAIN,
+  SALON_INSTAGRAM_ALT,
+  SALON_FACEBOOK,
+} from "@/lib/business";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -53,13 +62,13 @@ export default function RootLayout({
                 The Salty Mane Hair Co.
               </h3>
               <p className="text-sm leading-relaxed">
-                5530 Windward Parkway STE #1260
+                {SALON_ADDRESS.street}
                 <br />
-                Alpharetta, GA 30004
+                {SALON_ADDRESS.city}, {SALON_ADDRESS.state} {SALON_ADDRESS.zip}
               </p>
               <p className="text-sm mt-2">
-                <a href="tel:6786486010" className="hover:text-[#C9A96E] transition-colors">
-                  678-648-6010
+                <a href={`tel:${SALON_PHONE}`} className="hover:text-[#C9A96E] transition-colors">
+                  {SALON_PHONE_DISPLAY}
                 </a>
               </p>
             </div>
@@ -69,11 +78,11 @@ export default function RootLayout({
                 Hours
               </h3>
               <ul className="text-sm space-y-1">
-                <li>Monday: 9am – 3pm</li>
-                <li>Tuesday–Thursday: 9am – 7pm</li>
-                <li>Friday: 9am – 6pm</li>
-                <li>Saturday: 9am – 4pm</li>
-                <li>Sunday: Closed</li>
+                {SALON_HOURS.map(({ day, hours }) => (
+                  <li key={day}>
+                    {day}: {hours}
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -84,27 +93,27 @@ export default function RootLayout({
               <ul className="text-sm space-y-2">
                 <li>
                   <a
-                    href="https://instagram.com/the.salty.mane"
+                    href={`https://instagram.com/${SALON_INSTAGRAM_MAIN}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-[#C9A96E] transition-colors"
                   >
-                    @the.salty.mane
+                    @{SALON_INSTAGRAM_MAIN}
                   </a>
                 </li>
                 <li>
                   <a
-                    href="https://instagram.com/salty.hair.co"
+                    href={`https://instagram.com/${SALON_INSTAGRAM_ALT}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-[#C9A96E] transition-colors"
                   >
-                    @salty.hair.co
+                    @{SALON_INSTAGRAM_ALT}
                   </a>
                 </li>
                 <li>
                   <a
-                    href="https://facebook.com/TheSaltyMane"
+                    href={`https://facebook.com/${SALON_FACEBOOK}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-[#C9A96E] transition-colors"
@@ -116,7 +125,7 @@ export default function RootLayout({
               <div className="mt-4">
                 <p className="text-xs text-[#FAF7F2]/40 mb-1">Book via text:</p>
                 <a
-                  href="sms:6786486010"
+                  href={`sms:${SALON_PHONE}`}
                   className="inline-block bg-[#C9A96E] text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-[#8B7355] transition-colors"
                 >
                   Text to Book

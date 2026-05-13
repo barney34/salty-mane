@@ -32,7 +32,7 @@ export const STYLISTS: Stylist[] = [
       "Blonde Maintenance",
       "Hair Restoration",
     ],
-    tags: ["blonde", "balayage", "highlights", "extensions", "repair"],
+    tags: ["blonde", "balayage", "highlights", "extensions", "repair", "keratin"],
     extensionCertified: true,
     colorCorrectionEligible: false,
     maxComplexPerDay: 3,
