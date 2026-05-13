@@ -7,7 +7,7 @@ function hash(s: string): number {
 }
 
 export function isDateFullyBooked(stylistId: string, dateStr: string): boolean {
-  return hash(stylistId + dateStr) % 3 === 0;
+  return hash(stylistId + dateStr) % 5 === 0;
 }
 
 export function isSlotAvailable(stylistId: string, dateStr: string, slotIndex: number): boolean {

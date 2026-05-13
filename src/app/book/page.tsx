@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
-import type { Service, Stylist } from "@/types";
-import type { ServiceCategory } from "@/types";
+import type { Service, Stylist, ServiceCategory } from "@/types";
 import { isDateFullyBooked, isSlotAvailable, TIME_SLOTS } from "@/lib/mockCalendar";
 import { SERVICES, formatDuration } from "@/lib/services";
 import { STYLISTS } from "@/lib/stylists";
@@ -59,8 +58,7 @@ function getEligibleStylists(svc: Service): Stylist[] {
   return [...eligible].sort((a, b) => getLoadScore(a.id) - getLoadScore(b.id));
 }
 
-function getAvailabilityBadge(stylistId: string): { label: string; color: string } {
-  const score = getLoadScore(stylistId);
+function getAvailabilityBadge(score: number): { label: string; color: string } {
   if (score >= 1.0) return { label: "Fully Booked", color: "text-[#C0392B]" };
   if (score >= 0.5) return { label: "Limited", color: "text-[#D4846A]" };
   return { label: "Available", color: "text-[#7A9E87]" };
@@ -91,6 +89,7 @@ function ServiceStep({
               <div className="space-y-2">
                 {services.map((svc) => (
                   <button
+                    type="button"
                     key={svc.id}
                     onClick={() => onSelect(svc)}
                     className={`w-full text-left p-4 rounded-2xl border transition-all focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2 ${
@@ -131,6 +130,7 @@ function ServiceStep({
       <div className="mt-8 flex justify-end">
         <button
           disabled={!selected}
+          type="button"
           onClick={onContinue}
           className="bg-[#C9A96E] text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-[#8B7355] transition-colors disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2"
         >
@@ -168,11 +168,13 @@ function StylistStep({
 
       <div className="space-y-3">
         {stylists.map((st) => {
-          const badge = getAvailabilityBadge(st.id);
-          const fullyBooked = getLoadScore(st.id) >= 1.0;
+          const score = getLoadScore(st.id);
+          const badge = getAvailabilityBadge(score);
+          const fullyBooked = score >= 1.0;
           return (
             <button
               key={st.id}
+              type="button"
               disabled={fullyBooked}
               onClick={() => onSelect(st)}
               className={`w-full text-left p-4 rounded-2xl border transition-all focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2 ${
@@ -209,6 +211,7 @@ function StylistStep({
 
       <div className="mt-8 flex justify-between">
         <button
+          type="button"
           onClick={onBack}
           className="border-2 border-[#1A1A2E] text-[#1A1A2E] px-6 py-2.5 rounded-full text-sm font-medium hover:bg-[#1A1A2E] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#1A1A2E] focus:ring-offset-2"
         >
@@ -216,6 +219,7 @@ function StylistStep({
         </button>
         <button
           disabled={!selected}
+          type="button"
           onClick={onContinue}
           className="bg-[#C9A96E] text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-[#8B7355] transition-colors disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2"
         >
@@ -265,6 +269,12 @@ function DateTimeStep({
     viewYear > todayYear ||
     (viewYear === todayYear && viewMonth > todayMonthIndex);
 
+  const nextMonthStr =
+    viewMonth === 11
+      ? `${viewYear + 1}-01-01`
+      : `${viewYear}-${String(viewMonth + 2).padStart(2, "0")}-01`;
+  const canGoNext = nextMonthStr <= maxDate;
+
   function prevMonth() {
     if (viewMonth === 0) {
       setViewYear((y) => y - 1);
@@ -292,6 +302,7 @@ function DateTimeStep({
       <div className="bg-[#F0EBE3] rounded-2xl p-5 border border-[#C9A96E]/20">
         <div className="flex items-center justify-between mb-4">
           <button
+            type="button"
             onClick={prevMonth}
             disabled={!canGoPrev}
             className="p-1.5 rounded-full hover:bg-[#C9A96E]/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A96E]"
@@ -301,8 +312,10 @@ function DateTimeStep({
           </button>
           <span className="font-semibold text-[#1A1A2E] text-sm">{monthLabel}</span>
           <button
+            type="button"
             onClick={nextMonth}
-            className="p-1.5 rounded-full hover:bg-[#C9A96E]/20 transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A96E]"
+            disabled={!canGoNext}
+            className="p-1.5 rounded-full hover:bg-[#C9A96E]/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A96E]"
             aria-label="Next month"
           >
             <ChevronRight size={18} className="text-[#1A1A2E]" />
@@ -336,6 +349,7 @@ function DateTimeStep({
 
             return (
               <button
+                type="button"
                 key={ds}
                 disabled={disabled}
                 onClick={() => onDateSelect(ds)}
@@ -367,6 +381,7 @@ function DateTimeStep({
               const isSelected = slotIndex === i;
               return (
                 <button
+                  type="button"
                   key={slot}
                   disabled={!available}
                   onClick={() => onSlotSelect(i)}
@@ -388,6 +403,7 @@ function DateTimeStep({
 
       <div className="mt-8 flex justify-between">
         <button
+          type="button"
           onClick={onBack}
           className="border-2 border-[#1A1A2E] text-[#1A1A2E] px-6 py-2.5 rounded-full text-sm font-medium hover:bg-[#1A1A2E] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#1A1A2E] focus:ring-offset-2"
         >
@@ -395,6 +411,7 @@ function DateTimeStep({
         </button>
         <button
           disabled={!date || slotIndex === null}
+          type="button"
           onClick={onContinue}
           className="bg-[#C9A96E] text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-[#8B7355] transition-colors disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2"
         >
@@ -482,6 +499,7 @@ function ConfirmStep({
           </a>
         </p>
         <button
+          type="button"
           onClick={onReset}
           className="mt-6 text-sm text-[#8B7355] underline underline-offset-2 hover:text-[#1A1A2E] transition-colors"
         >
@@ -533,12 +551,14 @@ function ConfirmStep({
 
       <div className="mt-8 flex justify-between">
         <button
+          type="button"
           onClick={onBack}
           className="border-2 border-[#1A1A2E] text-[#1A1A2E] px-6 py-2.5 rounded-full text-sm font-medium hover:bg-[#1A1A2E] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#1A1A2E] focus:ring-offset-2"
         >
           Back
         </button>
         <button
+          type="button"
           onClick={onConfirm}
           className="bg-[#C9A96E] text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-[#8B7355] transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2"
         >

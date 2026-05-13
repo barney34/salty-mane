@@ -13,10 +13,13 @@ describe("isDateFullyBooked", () => {
   });
 
   it("varies by stylist — different stylists produce different booked-day patterns", () => {
-    const results = ["laci", "grace", "erica", "reese", "anna", "sara", "jolie"].map(
-      (id) => isDateFullyBooked(id, "2026-05-20")
+    const dates = Array.from({ length: 30 }, (_, i) =>
+      `2026-05-${String(i + 1).padStart(2, "0")}`
     );
-    const allSame = results.every((r) => r === results[0]);
+    const counts = ["laci", "grace", "erica", "reese"].map(
+      (id) => dates.filter((d) => isDateFullyBooked(id, d)).length
+    );
+    const allSame = counts.every((c) => c === counts[0]);
     expect(allSame).toBe(false);
   });
 
