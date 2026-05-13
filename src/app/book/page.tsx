@@ -464,7 +464,7 @@ function ConfirmStep({
               <dd className="font-medium text-[#1A1A2E]">
                 {service.name}
                 <span className="text-[#8B7355] font-normal ml-2">
-                  from ${service.startingPrice}
+                  {service.startingPrice === 0 ? "Free" : `from $${service.startingPrice}`}
                 </span>
               </dd>
             </div>
@@ -523,7 +523,7 @@ function ConfirmStep({
             <dd className="font-medium text-[#1A1A2E]">
               {service.name}
               <span className="text-[#8B7355] font-normal ml-2">
-                from ${service.startingPrice}
+                {service.startingPrice === 0 ? "Free" : `from $${service.startingPrice}`}
               </span>
             </dd>
           </div>
