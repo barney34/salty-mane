@@ -2,6 +2,7 @@ import type { QuizResult, StylistMatch } from "@/types";
 import { Clock, DollarSign, AlertTriangle, Star } from "lucide-react";
 import { formatDuration } from "@/lib/services";
 import { SALON_PHONE, SALON_PHONE_DISPLAY } from "@/lib/business";
+import { buildSmsLink } from "@/lib/booking";
 
 interface QuizResultProps {
   result: QuizResult;
@@ -80,7 +81,7 @@ function MatchCard({ match, isPrimary }: { match: StylistMatch; isPrimary: boole
       )}
 
       <a
-        href={`sms:${SALON_PHONE}`}
+        href={buildSmsLink(match.stylist.name, match.recommendedService)}
         className={`block text-center text-sm font-medium py-3 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2 ${
           isPrimary
             ? "bg-[#C9A96E] text-white hover:bg-[#8B7355]"

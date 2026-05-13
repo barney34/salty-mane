@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
   { href: "/quiz", label: "Find Your Stylist" },
+  { href: "/faq", label: "FAQ" },
 ];
 
 const MENU_ID = "mobile-nav-menu";

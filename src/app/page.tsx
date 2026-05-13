@@ -12,6 +12,7 @@ import {
   SALON_INSTAGRAM_MAIN,
 } from "@/lib/business";
 import { InstagramFeed } from "@/components/InstagramFeed";
+import { Testimonials } from "@/components/Testimonials";
 
 const TRUST_BADGES = [
   { icon: Star, title: "4.5★ Rated", desc: "366+ reviews from clients who drive hours to see us" },
@@ -128,6 +129,9 @@ export default function HomePage() {
       {/* Instagram feed */}
       <InstagramFeed primaryHandle={SALON_INSTAGRAM_MAIN} />
 
+      {/* Testimonials */}
+      <Testimonials />
+
       {/* Services teaser */}
       <section className="py-20 px-6 bg-[#1A1A2E] text-[#FAF7F2]">
         <div className="max-w-6xl mx-auto">
@@ -151,12 +155,18 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <div className="text-center">
+          <div className="text-center flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/services"
               className="inline-block border-2 border-[#C9A96E] text-[#C9A96E] font-semibold px-8 py-3 rounded-full hover:bg-[#C9A96E] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2 focus:ring-offset-[#1A1A2E]"
             >
               View Full Menu & Pricing
+            </Link>
+            <Link
+              href="/faq"
+              className="text-[#FAF7F2]/60 hover:text-[#C9A96E] font-medium text-sm flex items-center justify-center transition-colors"
+            >
+              Got questions? See our FAQ →
             </Link>
           </div>
         </div>
@@ -226,6 +236,20 @@ export default function HomePage() {
               cancellations with less notice.
             </p>
           </div>
+        </div>
+
+        {/* Google Maps embed */}
+        <div className="mt-8 rounded-2xl overflow-hidden border border-[#C9A96E]/20">
+          <iframe
+            src="https://maps.google.com/maps?q=5530+Windward+Pkwy+STE+1260+Alpharetta+GA+30004&output=embed&z=15"
+            width="100%"
+            height="300"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            title="The Salty Mane location map"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </div>
       </section>
     </>

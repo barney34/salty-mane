@@ -45,6 +45,41 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "HairSalon",
+  name: "The Salty Mane Hair Co.",
+  url: "https://thesaltymane.com",
+  telephone: "+16786486010",
+  priceRange: "$$",
+  currenciesAccepted: "USD",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "5530 Windward Parkway STE #1260",
+    addressLocality: "Alpharetta",
+    addressRegion: "GA",
+    postalCode: "30004",
+    addressCountry: "US",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 34.0754,
+    longitude: -84.2941,
+  },
+  openingHoursSpecification: [
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Monday", opens: "09:00", closes: "15:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Tuesday", opens: "09:00", closes: "19:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Wednesday", opens: "09:00", closes: "19:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Thursday", opens: "09:00", closes: "19:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Friday", opens: "09:00", closes: "18:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "09:00", closes: "16:00" },
+  ],
+  sameAs: [
+    "https://instagram.com/the.salty.mane",
+    "https://facebook.com/TheSaltyMane",
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -52,6 +87,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className="bg-[#FAF7F2] text-[#1A1A2E] font-sans antialiased">
         <Navigation />
         <main>{children}</main>
