@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Service, Stylist } from "@/types";
 import type { ServiceCategory } from "@/types";
 import { isDateFullyBooked, isSlotAvailable, TIME_SLOTS } from "@/lib/mockCalendar";
 import { SERVICES, formatDuration } from "@/lib/services";
 import { STYLISTS } from "@/lib/stylists";
 import { getLoadScore } from "@/lib/scheduling";
+import { BOOK_SMS_GENERAL } from "@/lib/booking";
+import { SALON_PHONE_DISPLAY } from "@/lib/business";
 
 type Step = 1 | 2 | 3 | 4;
 
@@ -403,6 +405,150 @@ function DateTimeStep({
   );
 }
 
+function ConfirmStep({
+  service,
+  stylist,
+  date,
+  slotIndex,
+  confirmed,
+  onConfirm,
+  onReset,
+  onBack,
+}: {
+  service: Service;
+  stylist: Stylist;
+  date: string;
+  slotIndex: number;
+  confirmed: boolean;
+  onConfirm: () => void;
+  onReset: () => void;
+  onBack: () => void;
+}) {
+  const formattedDate = formatDateDisplay(date);
+  const formattedTime = TIME_SLOTS[slotIndex];
+
+  if (confirmed) {
+    return (
+      <div className="text-center py-8">
+        <CheckCircle
+          size={56}
+          className="text-[#7A9E87] mx-auto mb-4"
+          strokeWidth={1.5}
+        />
+        <h2 className="font-serif text-2xl font-bold text-[#1A1A2E] mb-2">
+          You&apos;re booked!
+        </h2>
+        <div className="bg-[#F0EBE3] rounded-2xl border border-[#C9A96E]/20 p-6 mt-6 text-left max-w-sm mx-auto">
+          <dl className="space-y-3 text-sm">
+            <div>
+              <dt className="text-xs uppercase tracking-widest text-[#8B7355] mb-0.5">
+                Service
+              </dt>
+              <dd className="font-medium text-[#1A1A2E]">
+                {service.name}
+                <span className="text-[#8B7355] font-normal ml-2">
+                  from ${service.startingPrice}
+                </span>
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs uppercase tracking-widest text-[#8B7355] mb-0.5">
+                Stylist
+              </dt>
+              <dd className="font-medium text-[#1A1A2E]">
+                {stylist.name}
+                <span className="text-[#8B7355] font-normal ml-2">
+                  — {stylist.title}
+                </span>
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs uppercase tracking-widest text-[#8B7355] mb-0.5">
+                Date &amp; Time
+              </dt>
+              <dd className="font-medium text-[#1A1A2E]">
+                {formattedDate} at {formattedTime}
+              </dd>
+            </div>
+          </dl>
+        </div>
+        <p className="text-sm text-[#8B7355] mt-6 max-w-xs mx-auto">
+          We&apos;ll reach out to confirm your appointment. Questions?{" "}
+          <a
+            href={BOOK_SMS_GENERAL}
+            className="text-[#C9A96E] underline underline-offset-2"
+          >
+            Text us at {SALON_PHONE_DISPLAY}
+          </a>
+        </p>
+        <button
+          onClick={onReset}
+          className="mt-6 text-sm text-[#8B7355] underline underline-offset-2 hover:text-[#1A1A2E] transition-colors"
+        >
+          Book Another Appointment
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h2 className="font-serif text-xl font-bold text-[#1A1A2E] mb-6">
+        Confirm your booking
+      </h2>
+      <div className="bg-[#F0EBE3] rounded-2xl border border-[#C9A96E]/20 p-6">
+        <dl className="space-y-4 text-sm">
+          <div>
+            <dt className="text-xs uppercase tracking-widest text-[#8B7355] mb-0.5">
+              Service
+            </dt>
+            <dd className="font-medium text-[#1A1A2E]">
+              {service.name}
+              <span className="text-[#8B7355] font-normal ml-2">
+                from ${service.startingPrice}
+              </span>
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs uppercase tracking-widest text-[#8B7355] mb-0.5">
+              Stylist
+            </dt>
+            <dd className="font-medium text-[#1A1A2E]">
+              {stylist.name}
+              <span className="text-[#8B7355] font-normal ml-2">
+                — {stylist.title}
+              </span>
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs uppercase tracking-widest text-[#8B7355] mb-0.5">
+              Date &amp; Time
+            </dt>
+            <dd className="font-medium text-[#1A1A2E]">
+              {formattedDate} at {formattedTime}
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <div className="mt-8 flex justify-between">
+        <button
+          onClick={onBack}
+          className="border-2 border-[#1A1A2E] text-[#1A1A2E] px-6 py-2.5 rounded-full text-sm font-medium hover:bg-[#1A1A2E] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#1A1A2E] focus:ring-offset-2"
+        >
+          Back
+        </button>
+        <button
+          onClick={onConfirm}
+          className="bg-[#C9A96E] text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-[#8B7355] transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2"
+        >
+          Confirm Booking
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ProgressBar({ currentStep }: { currentStep: Step }) {
   const steps = [1, 2, 3, 4] as Step[];
   return (
@@ -447,8 +593,6 @@ export default function BookPage() {
   const [date, setDate] = useState<string | null>(null);
   const [slotIndex, setSlotIndex] = useState<number | null>(null);
 
-  void confirmed;
-
   function reset() {
     setStep(1);
     setConfirmed(false);
@@ -457,8 +601,6 @@ export default function BookPage() {
     setDate(null);
     setSlotIndex(null);
   }
-
-  void reset;
 
   return (
     <main className="min-h-screen bg-[#FAF7F2] py-12 px-4">
@@ -513,31 +655,16 @@ export default function BookPage() {
             />
           )}
           {step === 4 && (
-            <div>
-              <p className="text-center text-[#8B7355]">Step 4 — Confirm</p>
-              <div className="flex gap-3 mt-4 justify-center">
-                <button
-                  className="border border-[#1A1A2E] text-[#1A1A2E] px-6 py-2.5 rounded-full text-sm font-medium hover:bg-[#1A1A2E] hover:text-white transition-colors"
-                  onClick={() => setStep(3)}
-                >
-                  Back
-                </button>
-                <button
-                  className="bg-[#C9A96E] text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-[#8B7355] transition-colors"
-                  onClick={() => setConfirmed(true)}
-                >
-                  Confirm Booking
-                </button>
-              </div>
-              {confirmed && (
-                <div className="mt-6 text-center">
-                  <p className="text-[#7A9E87] font-semibold">You&apos;re booked!</p>
-                  <button className="mt-4 text-[#C9A96E] underline text-sm" onClick={reset}>
-                    Book Another
-                  </button>
-                </div>
-              )}
-            </div>
+            <ConfirmStep
+              service={service!}
+              stylist={stylist!}
+              date={date!}
+              slotIndex={slotIndex!}
+              confirmed={confirmed}
+              onConfirm={() => setConfirmed(true)}
+              onReset={reset}
+              onBack={() => setStep(3)}
+            />
           )}
         </div>
       </div>
