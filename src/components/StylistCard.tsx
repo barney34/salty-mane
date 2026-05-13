@@ -2,13 +2,13 @@ import Image from "next/image";
 import type { Stylist } from "@/types";
 import { Check } from "lucide-react";
 import { SALON_PHONE } from "@/lib/business";
+import { IgIcon } from "./IgIcon";
 
 interface StylistCardProps {
   stylist: Stylist;
   loadScore?: number;
 }
 
-// Gradient backgrounds for the initials avatar — cycles by stylist index
 const AVATAR_GRADIENTS = [
   "from-[#C9A96E] to-[#8B7355]",
   "from-[#4A7FA5] to-[#1A1A2E]",
@@ -20,15 +20,17 @@ const AVATAR_GRADIENTS = [
   "from-[#7A9E87] to-[#8B7355]",
 ];
 
+function hashName(name: string): number {
+  return name.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+}
+
 export function StylistCard({ stylist, loadScore = 0 }: StylistCardProps) {
   const inHighDemand = loadScore > 0.75;
   const fullyBooked = loadScore >= 1.0;
-  const gradientIdx = stylist.name.charCodeAt(0) % AVATAR_GRADIENTS.length;
-  const gradient = AVATAR_GRADIENTS[gradientIdx] ?? AVATAR_GRADIENTS[0];
+  const gradient = AVATAR_GRADIENTS[hashName(stylist.name) % AVATAR_GRADIENTS.length];
 
   return (
     <article className="bg-[#F0EBE3] rounded-2xl border border-[#C9A96E]/20 hover:shadow-md transition-shadow flex flex-col overflow-hidden">
-      {/* Headshot or styled initials avatar */}
       <div className="relative h-56 w-full">
         {stylist.headshot ? (
           <Image
@@ -73,7 +75,6 @@ export function StylistCard({ stylist, loadScore = 0 }: StylistCardProps) {
         )}
       </div>
 
-      {/* Content */}
       <div className="p-6 flex flex-col gap-4 flex-1">
         <div>
           <h3 className="font-serif text-xl font-bold text-[#1A1A2E]">{stylist.name}</h3>
@@ -115,17 +116,5 @@ export function StylistCard({ stylist, loadScore = 0 }: StylistCardProps) {
         )}
       </div>
     </article>
-  );
-}
-
-function IgIcon({ className }: { className?: string }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"
-      className={className} aria-hidden="true">
-      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-    </svg>
   );
 }

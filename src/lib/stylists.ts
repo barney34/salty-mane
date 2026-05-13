@@ -1,7 +1,7 @@
 import type { Stylist } from "@/types";
 
-// headshot: set to a path under /public/stylists/<name>.jpg when real photos are available.
-// Leave undefined to show the styled initials fallback in StylistCard.
+// To add a real headshot: drop the photo in /public/stylists/<name>.jpg
+// then set headshot: "/stylists/<name>.jpg" on the stylist below.
 export const STYLISTS: Stylist[] = [
   {
     id: "laci",
@@ -16,7 +16,6 @@ export const STYLISTS: Stylist[] = [
     maxComplexPerDay: 2,
     maxTotalSlotsPerDay: 4,
     instagram: "@the.salty.mane",
-    // headshot: "/stylists/laci.jpg",
   },
   {
     id: "olivia",
@@ -30,7 +29,6 @@ export const STYLISTS: Stylist[] = [
     colorCorrectionEligible: false,
     maxComplexPerDay: 3,
     maxTotalSlotsPerDay: 5,
-    // headshot: "/stylists/olivia.jpg",
   },
   {
     id: "grace",
@@ -44,7 +42,6 @@ export const STYLISTS: Stylist[] = [
     colorCorrectionEligible: false,
     maxComplexPerDay: 3,
     maxTotalSlotsPerDay: 5,
-    // headshot: "/stylists/grace.jpg",
   },
   {
     id: "erica",
@@ -59,7 +56,6 @@ export const STYLISTS: Stylist[] = [
     maxComplexPerDay: 3,
     maxTotalSlotsPerDay: 5,
     instagram: "@ericaa.mane",
-    // headshot: "/stylists/erica.jpg",
   },
   {
     id: "reese",
@@ -74,7 +70,6 @@ export const STYLISTS: Stylist[] = [
     maxComplexPerDay: 3,
     maxTotalSlotsPerDay: 5,
     instagram: "@reese.mane",
-    // headshot: "/stylists/reese.jpg",
   },
   {
     id: "anna",
@@ -88,7 +83,6 @@ export const STYLISTS: Stylist[] = [
     colorCorrectionEligible: false,
     maxComplexPerDay: 3,
     maxTotalSlotsPerDay: 6,
-    // headshot: "/stylists/anna.jpg",
   },
   {
     id: "sara",
@@ -102,21 +96,19 @@ export const STYLISTS: Stylist[] = [
     colorCorrectionEligible: false,
     maxComplexPerDay: 3,
     maxTotalSlotsPerDay: 6,
-    // headshot: "/stylists/sara.jpg",
   },
   {
     id: "jolie",
     name: "Jolie",
-    level: "mid",
-    title: "Stylist",
-    bio: "Jolie is a valued member of the Salty Mane team. Update this bio with Jolie's specialties and personality — ask Laci for details or pull from her Instagram.",
-    specialties: ["Cuts", "Color", "Styling"],
-    tags: ["cuts", "tones", "blowouts"],
+    level: "mid-senior",
+    title: "Color Artist & Texture Specialist",
+    bio: "Jolie has a gift for reading hair. She sees texture, undertone, and potential where others see a starting point — and she uses all of it. Whether you're after a seamless lived-in color, a head-turning dimensional brunette, or a cut that finally works with your natural wave, Jolie delivers results that feel effortless because she's done the work to make them that way. Clients describe her as the stylist who gets it right the first time.",
+    specialties: ["Dimensional Color", "Lived-In Brunette", "Textured Cuts", "Glosses & Tones"],
+    tags: ["cuts", "balayage", "highlights", "tones"],
     extensionCertified: false,
     colorCorrectionEligible: false,
     maxComplexPerDay: 3,
-    maxTotalSlotsPerDay: 6,
-    // headshot: "/stylists/jolie.jpg",
+    maxTotalSlotsPerDay: 5,
   },
 ];
 
