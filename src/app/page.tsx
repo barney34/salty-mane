@@ -9,7 +9,9 @@ import {
   SALON_EMAIL,
   SALON_ADDRESS,
   SALON_HOURS,
+  SALON_INSTAGRAM_MAIN,
 } from "@/lib/business";
+import { InstagramFeed } from "@/components/InstagramFeed";
 
 const TRUST_BADGES = [
   { icon: Star, title: "4.5★ Rated", desc: "366+ reviews from clients who drive hours to see us" },
@@ -122,6 +124,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Instagram feed */}
+      <InstagramFeed handle={SALON_INSTAGRAM_MAIN} />
 
       {/* Services teaser */}
       <section className="py-20 px-6 bg-[#1A1A2E] text-[#FAF7F2]">

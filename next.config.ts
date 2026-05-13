@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "picsum.photos" },
+      // Phase 2: add instagram CDN domains here when Graph API is connected
+      // { protocol: "https", hostname: "*.cdninstagram.com" },
+      // { protocol: "https", hostname: "*.fbcdn.net" },
+    ],
+  },
   async headers() {
     return [
       {

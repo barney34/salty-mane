@@ -19,6 +19,7 @@ export const STYLISTS: Stylist[] = [
     maxComplexPerDay: 2,
     maxTotalSlotsPerDay: 4,
     instagram: "@the.salty.mane",
+    headshot: "https://picsum.photos/seed/laci-stylist/400/500",
   },
   {
     id: "olivia",
@@ -37,6 +38,7 @@ export const STYLISTS: Stylist[] = [
     colorCorrectionEligible: false,
     maxComplexPerDay: 3,
     maxTotalSlotsPerDay: 5,
+    headshot: "https://picsum.photos/seed/olivia-stylist/400/500",
   },
   {
     id: "grace",
@@ -55,6 +57,7 @@ export const STYLISTS: Stylist[] = [
     colorCorrectionEligible: false,
     maxComplexPerDay: 3,
     maxTotalSlotsPerDay: 5,
+    headshot: "https://picsum.photos/seed/grace-stylist/400/500",
   },
   {
     id: "anna",
@@ -73,6 +76,7 @@ export const STYLISTS: Stylist[] = [
     colorCorrectionEligible: false,
     maxComplexPerDay: 3,
     maxTotalSlotsPerDay: 6,
+    headshot: "https://picsum.photos/seed/anna-stylist/400/500",
   },
   {
     id: "sara",
@@ -91,6 +95,7 @@ export const STYLISTS: Stylist[] = [
     colorCorrectionEligible: false,
     maxComplexPerDay: 3,
     maxTotalSlotsPerDay: 6,
+    headshot: "https://picsum.photos/seed/sara-stylist/400/500",
   },
 ];
 
