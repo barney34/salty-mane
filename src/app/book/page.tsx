@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Service, Stylist } from "@/types";
 import type { ServiceCategory } from "@/types";
+import { isDateFullyBooked, isSlotAvailable, TIME_SLOTS } from "@/lib/mockCalendar";
 import { SERVICES, formatDuration } from "@/lib/services";
 import { STYLISTS } from "@/lib/stylists";
 import { getLoadScore } from "@/lib/scheduling";
@@ -22,6 +24,28 @@ const SERVICE_GROUPS: { label: string; categories: ServiceCategory[] }[] = [
   { label: "Extensions", categories: ["extensions"] },
   { label: "Treatments", categories: ["treatments"] },
 ];
+
+function toDateStr(d: Date): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(d);
+}
+
+function todayStr(): string {
+  return toDateStr(new Date());
+}
+
+function addDays(dateStr: string, n: number): string {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return toDateStr(new Date(y, m - 1, d + n));
+}
+
+function formatDateDisplay(dateStr: string): string {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
+}
 
 function getEligibleStylists(svc: Service): Stylist[] {
   let eligible = STYLISTS;
@@ -200,6 +224,185 @@ function StylistStep({
   );
 }
 
+const DAY_HEADERS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
+function DateTimeStep({
+  stylist,
+  date,
+  slotIndex,
+  onDateSelect,
+  onSlotSelect,
+  onContinue,
+  onBack,
+}: {
+  stylist: Stylist;
+  date: string | null;
+  slotIndex: number | null;
+  onDateSelect: (d: string) => void;
+  onSlotSelect: (i: number) => void;
+  onContinue: () => void;
+  onBack: () => void;
+}) {
+  const today = todayStr();
+  const maxDate = addDays(today, 30);
+  const todayYear = parseInt(today.slice(0, 4));
+  const todayMonthIndex = parseInt(today.slice(5, 7)) - 1;
+
+  const [viewYear, setViewYear] = useState(todayYear);
+  const [viewMonth, setViewMonth] = useState(todayMonthIndex);
+
+  const firstOfMonth = new Date(viewYear, viewMonth, 1);
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  const startPad = firstOfMonth.getDay();
+  const monthLabel = firstOfMonth.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
+
+  const canGoPrev =
+    viewYear > todayYear ||
+    (viewYear === todayYear && viewMonth > todayMonthIndex);
+
+  function prevMonth() {
+    if (viewMonth === 0) {
+      setViewYear((y) => y - 1);
+      setViewMonth(11);
+    } else {
+      setViewMonth((m) => m - 1);
+    }
+  }
+
+  function nextMonth() {
+    if (viewMonth === 11) {
+      setViewYear((y) => y + 1);
+      setViewMonth(0);
+    } else {
+      setViewMonth((m) => m + 1);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="font-serif text-xl font-bold text-[#1A1A2E] mb-6">
+        Pick a date &amp; time
+      </h2>
+
+      <div className="bg-[#F0EBE3] rounded-2xl p-5 border border-[#C9A96E]/20">
+        <div className="flex items-center justify-between mb-4">
+          <button
+            onClick={prevMonth}
+            disabled={!canGoPrev}
+            className="p-1.5 rounded-full hover:bg-[#C9A96E]/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A96E]"
+            aria-label="Previous month"
+          >
+            <ChevronLeft size={18} className="text-[#1A1A2E]" />
+          </button>
+          <span className="font-semibold text-[#1A1A2E] text-sm">{monthLabel}</span>
+          <button
+            onClick={nextMonth}
+            className="p-1.5 rounded-full hover:bg-[#C9A96E]/20 transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A96E]"
+            aria-label="Next month"
+          >
+            <ChevronRight size={18} className="text-[#1A1A2E]" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-7 mb-2">
+          {DAY_HEADERS.map((h) => (
+            <div
+              key={h}
+              className="text-center text-xs font-semibold text-[#8B7355] py-1"
+            >
+              {h}
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-7 gap-1">
+          {Array.from({ length: startPad }).map((_, i) => (
+            <div key={`pad-${i}`} />
+          ))}
+          {Array.from({ length: daysInMonth }).map((_, i) => {
+            const dayNum = i + 1;
+            const ds = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(dayNum).padStart(2, "0")}`;
+            const isSunday = new Date(viewYear, viewMonth, dayNum).getDay() === 0;
+            const isPast = ds < today;
+            const isBeyond = ds > maxDate;
+            const isFullyBooked = isDateFullyBooked(stylist.id, ds);
+            const disabled = isSunday || isPast || isBeyond || isFullyBooked;
+            const isSelected = ds === date;
+
+            return (
+              <button
+                key={ds}
+                disabled={disabled}
+                onClick={() => onDateSelect(ds)}
+                className={`aspect-square rounded-full text-sm font-medium transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#C9A96E] ${
+                  isSelected
+                    ? "bg-[#C9A96E] text-white"
+                    : disabled
+                    ? "text-[#8B7355]/30 cursor-not-allowed"
+                    : "text-[#1A1A2E] hover:bg-[#C9A96E]/20"
+                }`}
+                aria-label={ds}
+                aria-pressed={isSelected}
+              >
+                {dayNum}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {date && (
+        <div className="mt-6">
+          <p className="text-sm font-semibold text-[#1A1A2E] mb-3">
+            Available times — {formatDateDisplay(date)}
+          </p>
+          <div className="grid grid-cols-4 gap-2">
+            {TIME_SLOTS.map((slot, i) => {
+              const available = isSlotAvailable(stylist.id, date, i);
+              const isSelected = slotIndex === i;
+              return (
+                <button
+                  key={slot}
+                  disabled={!available}
+                  onClick={() => onSlotSelect(i)}
+                  className={`py-2.5 rounded-xl text-xs font-medium border transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A96E] ${
+                    isSelected
+                      ? "bg-[#C9A96E] text-white border-[#C9A96E]"
+                      : available
+                      ? "bg-[#F0EBE3] border-[#C9A96E]/30 text-[#1A1A2E] hover:border-[#C9A96E]"
+                      : "bg-[#F0EBE3]/50 border-[#C9A96E]/10 text-[#8B7355]/40 cursor-not-allowed"
+                  }`}
+                >
+                  {slot}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <div className="mt-8 flex justify-between">
+        <button
+          onClick={onBack}
+          className="border-2 border-[#1A1A2E] text-[#1A1A2E] px-6 py-2.5 rounded-full text-sm font-medium hover:bg-[#1A1A2E] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#1A1A2E] focus:ring-offset-2"
+        >
+          Back
+        </button>
+        <button
+          disabled={!date || slotIndex === null}
+          onClick={onContinue}
+          className="bg-[#C9A96E] text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-[#8B7355] transition-colors disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2"
+        >
+          Continue
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ProgressBar({ currentStep }: { currentStep: Step }) {
   const steps = [1, 2, 3, 4] as Step[];
   return (
@@ -244,8 +447,6 @@ export default function BookPage() {
   const [date, setDate] = useState<string | null>(null);
   const [slotIndex, setSlotIndex] = useState<number | null>(null);
 
-  void date;
-  void slotIndex;
   void confirmed;
 
   function reset() {
@@ -298,23 +499,18 @@ export default function BookPage() {
             />
           )}
           {step === 3 && (
-            <div>
-              <p className="text-center text-[#8B7355]">Step 3 — Date & Time</p>
-              <div className="flex gap-3 mt-4 justify-center">
-                <button
-                  className="border border-[#1A1A2E] text-[#1A1A2E] px-6 py-2.5 rounded-full text-sm font-medium hover:bg-[#1A1A2E] hover:text-white transition-colors"
-                  onClick={() => setStep(2)}
-                >
-                  Back
-                </button>
-                <button
-                  className="bg-[#C9A96E] text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-[#8B7355] transition-colors"
-                  onClick={() => setStep(4)}
-                >
-                  Continue
-                </button>
-              </div>
-            </div>
+            <DateTimeStep
+              stylist={stylist!}
+              date={date}
+              slotIndex={slotIndex}
+              onDateSelect={(d) => {
+                setDate(d);
+                setSlotIndex(null);
+              }}
+              onSlotSelect={setSlotIndex}
+              onContinue={() => setStep(4)}
+              onBack={() => setStep(2)}
+            />
           )}
           {step === 4 && (
             <div>
