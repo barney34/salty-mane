@@ -1,3 +1,5 @@
+import { SALON_ADDRESS } from "@/lib/business";
+
 export interface FaqItem {
   id: string;
   question: string;
@@ -48,7 +50,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     id: "parking",
     question: "Where are you located and is parking free?",
-    answer: "We're at 5530 Windward Parkway STE #1260, Alpharetta, GA 30004 — left of LA Fitness, behind Walgreens, facing Deerfield Parkway. Free parking is available directly in front of the suite. We're just off GA-400 at Windward Parkway.",
+    answer: `We're at ${SALON_ADDRESS.street}, ${SALON_ADDRESS.city}, ${SALON_ADDRESS.state} ${SALON_ADDRESS.zip} — ${SALON_ADDRESS.directions}. Free parking is available directly in front of the suite. We're just off GA-400 at Windward Parkway.`,
   },
   {
     id: "guarantee",

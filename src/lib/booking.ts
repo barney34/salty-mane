@@ -1,9 +1,11 @@
-export const BOOK_SMS = "sms:+16786486010";
-export const BOOK_TEL = "tel:+16786486010";
+import { SALON_PHONE } from "@/lib/business";
+
+export const BOOK_SMS = `sms:${SALON_PHONE}`;
+export const BOOK_TEL = `tel:${SALON_PHONE}`;
 
 export function buildSmsLink(stylistName: string, serviceName: string): string {
   const body = encodeURIComponent(
     `Hi! I'd like to book with ${stylistName} for ${serviceName}.`
   );
-  return `sms:+16786486010?body=${body}`;
+  return `${BOOK_SMS}?body=${body}`;
 }
