@@ -9,7 +9,6 @@ function getTodayStr(): string {
 // Seeded mock load for MVP — Phase 2 replaces with live booking API
 const MOCK_LOADS: StylistLoad[] = [
   { stylistId: "laci", date: getTodayStr(), bookedComplex: 2, bookedTotal: 3 },
-  { stylistId: "olivia", date: getTodayStr(), bookedComplex: 1, bookedTotal: 3 },
   { stylistId: "grace", date: getTodayStr(), bookedComplex: 2, bookedTotal: 4 },
   { stylistId: "anna", date: getTodayStr(), bookedComplex: 1, bookedTotal: 2 },
   { stylistId: "sara", date: getTodayStr(), bookedComplex: 0, bookedTotal: 1 },
