@@ -241,7 +241,7 @@ export default function HomePage() {
 
         {/* Map CTA */}
         <a
-          href="https://www.google.com/maps/dir/?api=1&destination=5530+Windward+Pkwy+STE+1260+Alpharetta+GA+30004"
+          href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${SALON_ADDRESS.street}, ${SALON_ADDRESS.city}, ${SALON_ADDRESS.state} ${SALON_ADDRESS.zip}`)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-8 flex items-center justify-between gap-6 bg-[#1A1A2E] text-[#FAF7F2] rounded-2xl px-8 py-6 hover:bg-[#C9A96E] transition-colors group focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2"
@@ -249,7 +249,7 @@ export default function HomePage() {
           <div>
             <p className="font-semibold text-base">Get Directions</p>
             <p className="text-sm text-[#FAF7F2]/60 group-hover:text-white/70 mt-0.5">
-              5530 Windward Pkwy STE #1260 · Alpharetta, GA
+              {SALON_ADDRESS.street} · {SALON_ADDRESS.city}, {SALON_ADDRESS.state}
             </p>
           </div>
           <svg className="w-6 h-6 shrink-0 text-[#C9A96E] group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">

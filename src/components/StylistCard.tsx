@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { Stylist } from "@/types";
 import { Check } from "lucide-react";
-import { BOOK_SMS_GENERAL } from "@/lib/booking";
+import { buildSmsLink } from "@/lib/booking";
 import { IgIcon } from "./IgIcon";
 
 interface StylistCardProps {
@@ -108,7 +108,7 @@ export function StylistCard({ stylist, loadScore = 0 }: StylistCardProps) {
 
         {!fullyBooked && (
           <a
-            href={BOOK_SMS_GENERAL}
+            href={buildSmsLink(stylist.name, "an appointment")}
             className="mt-auto block text-center bg-[#1A1A2E] text-[#FAF7F2] text-sm font-medium py-3 rounded-full hover:bg-[#C9A96E] transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A96E] focus:ring-offset-2"
           >
             Book with {stylist.name}
